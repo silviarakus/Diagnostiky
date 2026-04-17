@@ -1,0 +1,1638 @@
+<!DOCTYPE html>
+<html lang="sk">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Diagnostika manažéra a lídra</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=DM+Sans:wght@400;500;600;700&display=swap');
+
+:root {
+  --navy: #0f1b2d;
+  --navy-light: #1a2d47;
+  --gold: #c9a84c;
+  --gold-light: #e8d5a0;
+  --gold-dim: rgba(201,168,76,0.15);
+  --cream: #faf8f2;
+  --white: #ffffff;
+  --gray-100: #f5f3ee;
+  --gray-200: #e8e5dd;
+  --gray-300: #d4d0c4;
+  --gray-400: #9a9588;
+  --gray-600: #5a564e;
+  --green: #2d6a4f;
+  --green-light: #e8f5ee;
+  --red: #9a3d3d;
+  --red-light: #fbe8e8;
+  --font-display: 'Cormorant Garamond', Georgia, serif;
+  --font-body: 'DM Sans', system-ui, sans-serif;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  font-family: var(--font-body);
+  background: var(--cream);
+  color: var(--navy);
+  min-height: 100vh;
+  overflow-x: hidden;
+  line-height: 1.5;
+}
+
+.app { max-width: 820px; margin: 0 auto; padding: 20px; }
+
+/* === INTRO === */
+.intro {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  padding: 40px 20px;
+  animation: fadeIn 1s ease;
+}
+
+.intro-badge {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 4px;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 30px;
+}
+
+.intro h1 {
+  font-family: var(--font-display);
+  font-size: clamp(36px, 6vw, 56px);
+  font-weight: 700;
+  line-height: 1.15;
+  color: var(--navy);
+  margin-bottom: 20px;
+}
+
+.intro h1 em {
+  color: var(--gold);
+  font-style: italic;
+}
+
+.intro-desc {
+  font-size: 17px;
+  color: var(--gray-600);
+  max-width: 580px;
+  line-height: 1.7;
+  margin-bottom: 16px;
+}
+
+.intro-meta {
+  font-size: 13px;
+  color: var(--gray-400);
+  margin-bottom: 36px;
+}
+
+.intro-contract {
+  background: var(--white);
+  border-left: 3px solid var(--gold);
+  padding: 22px 26px;
+  max-width: 580px;
+  text-align: left;
+  margin-bottom: 36px;
+  border-radius: 0 8px 8px 0;
+}
+
+.intro-contract h4 {
+  font-family: var(--font-display);
+  font-size: 20px;
+  color: var(--navy);
+  margin-bottom: 10px;
+}
+
+.intro-contract p {
+  font-size: 14px;
+  color: var(--gray-600);
+  line-height: 1.65;
+}
+
+.intro-form {
+  width: 100%;
+  max-width: 440px;
+  margin-bottom: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.intro-form input {
+  width: 100%;
+  padding: 16px 20px;
+  font-family: var(--font-body);
+  font-size: 16px;
+  border: 2px solid var(--gray-200);
+  border-radius: 14px;
+  background: var(--white);
+  color: var(--navy);
+  transition: all 0.3s;
+}
+
+.intro-form input:focus {
+  outline: none;
+  border-color: var(--gold);
+  box-shadow: 0 0 0 4px var(--gold-dim);
+}
+
+.btn-primary {
+  padding: 18px 40px;
+  font-family: var(--font-body);
+  font-size: 15px;
+  font-weight: 600;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  background: var(--navy);
+  color: var(--cream);
+  border: none;
+  border-radius: 100px;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 4px 20px rgba(15,27,45,0.15);
+}
+
+.btn-primary:hover {
+  background: var(--gold);
+  color: var(--navy);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 30px rgba(201,168,76,0.3);
+}
+
+.btn-primary:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+.btn-secondary {
+  padding: 14px 32px;
+  font-family: var(--font-body);
+  font-size: 14px;
+  font-weight: 500;
+  background: transparent;
+  color: var(--navy);
+  border: 1.5px solid var(--gray-300);
+  border-radius: 100px;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.btn-secondary:hover {
+  border-color: var(--gold);
+  color: var(--gold);
+}
+
+/* === PROGRESS === */
+.progress-wrap {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: rgba(250,248,242,0.95);
+  backdrop-filter: blur(10px);
+  padding: 16px 0;
+  margin-bottom: 20px;
+}
+
+.progress-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.progress-label {
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--gray-400);
+}
+
+.progress-count {
+  font-family: var(--font-display);
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--navy);
+}
+
+.progress-bar {
+  height: 4px;
+  background: var(--gray-200);
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--gold), var(--gold-light));
+  border-radius: 4px;
+  transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.section-label {
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--gold);
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  margin-top: 8px;
+}
+
+/* === SECTION HEADER === */
+.section-header {
+  margin: 40px 0 30px;
+  animation: fadeIn 0.5s ease;
+}
+
+.section-number {
+  font-family: var(--font-display);
+  font-size: 48px;
+  font-weight: 700;
+  color: var(--gold-dim);
+  line-height: 1;
+}
+
+.section-title {
+  font-family: var(--font-display);
+  font-size: clamp(26px, 4vw, 34px);
+  font-weight: 700;
+  color: var(--navy);
+  margin-bottom: 12px;
+  margin-top: -8px;
+}
+
+.section-intro {
+  font-size: 15px;
+  color: var(--gray-600);
+  line-height: 1.65;
+  padding: 14px 18px;
+  background: var(--white);
+  border-left: 3px solid var(--gold);
+  border-radius: 0 8px 8px 0;
+}
+
+/* === QUESTION BLOCKS === */
+.question-block {
+  margin-bottom: 28px;
+  animation: slideUp 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.question-label {
+  font-family: var(--font-display);
+  font-size: 20px;
+  font-weight: 600;
+  line-height: 1.35;
+  color: var(--navy);
+  margin-bottom: 10px;
+}
+
+.question-hint {
+  font-size: 13px;
+  color: var(--gray-400);
+  margin-bottom: 12px;
+  font-style: italic;
+}
+
+.question-input {
+  width: 100%;
+  padding: 14px 18px;
+  font-family: var(--font-body);
+  font-size: 15px;
+  border: 2px solid var(--gray-200);
+  border-radius: 12px;
+  background: var(--white);
+  color: var(--navy);
+  transition: all 0.3s;
+  line-height: 1.5;
+  resize: vertical;
+  min-height: 80px;
+}
+
+.question-input.short {
+  min-height: auto;
+  resize: none;
+}
+
+.question-input:focus {
+  outline: none;
+  border-color: var(--gold);
+  box-shadow: 0 0 0 3px var(--gold-dim);
+}
+
+/* === SCALE 1-10 === */
+.scale-block {
+  background: var(--white);
+  border: 2px solid var(--gray-200);
+  border-radius: 16px;
+  padding: 20px;
+  margin-bottom: 28px;
+}
+
+.scale-label {
+  font-family: var(--font-display);
+  font-size: 19px;
+  font-weight: 600;
+  color: var(--navy);
+  margin-bottom: 6px;
+  line-height: 1.4;
+}
+
+.scale-hint {
+  font-size: 13px;
+  color: var(--gray-600);
+  margin-bottom: 16px;
+}
+
+.scale-options {
+  display: grid;
+  grid-template-columns: repeat(10, 1fr);
+  gap: 6px;
+}
+
+.scale-option {
+  aspect-ratio: 1;
+  min-height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--white);
+  border: 2px solid var(--gray-200);
+  border-radius: 10px;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 14px;
+  color: var(--gray-600);
+  transition: all 0.25s;
+  user-select: none;
+}
+
+.scale-option:hover {
+  border-color: var(--gold);
+  transform: translateY(-2px);
+}
+
+.scale-option.selected {
+  background: var(--navy);
+  color: var(--cream);
+  border-color: var(--navy);
+}
+
+.scale-ends {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 8px;
+  font-size: 11px;
+  color: var(--gray-400);
+  letter-spacing: 0.5px;
+}
+
+/* === NAVIGATION === */
+.nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 14px;
+  margin-top: 40px;
+  padding-top: 24px;
+  border-top: 1px solid var(--gray-200);
+}
+
+.nav-btn {
+  padding: 14px 28px;
+  font-family: var(--font-body);
+  font-size: 14px;
+  font-weight: 500;
+  border-radius: 100px;
+  cursor: pointer;
+  transition: all 0.3s;
+  border: 1.5px solid var(--gray-300);
+  background: transparent;
+  color: var(--navy);
+}
+
+.nav-btn:hover:not(:disabled) {
+  border-color: var(--gold);
+  color: var(--gold);
+}
+
+.nav-btn.primary {
+  background: var(--navy);
+  color: var(--cream);
+  border-color: var(--navy);
+}
+
+.nav-btn.primary:hover {
+  background: var(--gold);
+  border-color: var(--gold);
+  color: var(--navy);
+}
+
+.nav-btn:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+
+/* === RESULTS === */
+.results {
+  padding: 30px 0;
+  animation: fadeIn 0.6s ease;
+}
+
+.results-header {
+  text-align: center;
+  margin-bottom: 40px;
+  padding-bottom: 30px;
+  border-bottom: 1px solid var(--gray-200);
+}
+
+.results-header .badge {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 4px;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 14px;
+}
+
+.results-header h1 {
+  font-family: var(--font-display);
+  font-size: clamp(32px, 5vw, 44px);
+  font-weight: 700;
+  color: var(--navy);
+  margin-bottom: 14px;
+  line-height: 1.2;
+}
+
+.results-meta {
+  font-size: 14px;
+  color: var(--gray-600);
+}
+
+.results-meta strong {
+  color: var(--navy);
+  font-weight: 600;
+}
+
+.results-intro {
+  background: var(--white);
+  border-left: 3px solid var(--gold);
+  padding: 22px 26px;
+  margin-bottom: 36px;
+  border-radius: 0 8px 8px 0;
+  font-size: 15px;
+  color: var(--gray-600);
+  line-height: 1.7;
+}
+
+.insight-card {
+  background: var(--white);
+  border: 2px solid var(--gray-200);
+  border-radius: 16px;
+  padding: 24px 26px;
+  margin-bottom: 18px;
+  transition: all 0.3s;
+}
+
+.insight-card:hover {
+  border-color: var(--gold);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 30px rgba(15,27,45,0.08);
+}
+
+.insight-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.insight-tag {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  padding: 4px 10px;
+  border-radius: 4px;
+}
+
+.insight-tag.alert {
+  background: var(--red-light);
+  color: var(--red);
+}
+
+.insight-tag.caution {
+  background: #fff4e5;
+  color: #a05e00;
+}
+
+.insight-tag.good {
+  background: var(--green-light);
+  color: var(--green);
+}
+
+.insight-score {
+  margin-left: auto;
+  font-family: var(--font-display);
+  font-size: 28px;
+  font-weight: 700;
+  color: var(--navy);
+}
+
+.insight-score small {
+  font-size: 14px;
+  color: var(--gray-400);
+  font-weight: 400;
+}
+
+.insight-title {
+  font-family: var(--font-display);
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--navy);
+  margin-bottom: 8px;
+  line-height: 1.3;
+}
+
+.insight-text {
+  font-size: 15px;
+  color: var(--gray-600);
+  line-height: 1.65;
+}
+
+.results-axes {
+  background: var(--white);
+  border-radius: 20px;
+  padding: 28px;
+  margin: 36px 0;
+  box-shadow: 0 4px 30px rgba(15,27,45,0.06);
+}
+
+.results-axes h3 {
+  font-family: var(--font-display);
+  font-size: 24px;
+  color: var(--navy);
+  margin-bottom: 6px;
+}
+
+.results-axes-desc {
+  font-size: 13px;
+  color: var(--gray-400);
+  margin-bottom: 22px;
+}
+
+.axis-row {
+  margin-bottom: 18px;
+}
+
+.axis-row:last-child {
+  margin-bottom: 0;
+}
+
+.axis-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-bottom: 6px;
+}
+
+.axis-name {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--navy);
+}
+
+.axis-value {
+  font-family: var(--font-display);
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--gold);
+}
+
+.axis-bar {
+  height: 10px;
+  background: var(--gray-200);
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.axis-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--gold), var(--gold-light));
+  border-radius: 10px;
+  transition: width 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.axis-fill.low { background: linear-gradient(90deg, #c77070, #e89a9a); }
+.axis-fill.mid { background: linear-gradient(90deg, #c9a84c, #e8d5a0); }
+.axis-fill.high { background: linear-gradient(90deg, #4c9a7a, #7dc5a6); }
+
+/* === ANSWERS RECAP === */
+.recap {
+  margin-top: 40px;
+}
+
+.recap h3 {
+  font-family: var(--font-display);
+  font-size: 26px;
+  color: var(--navy);
+  margin-bottom: 8px;
+}
+
+.recap-desc {
+  font-size: 14px;
+  color: var(--gray-600);
+  margin-bottom: 24px;
+}
+
+.recap-section {
+  background: var(--white);
+  border-radius: 14px;
+  padding: 22px 24px;
+  margin-bottom: 14px;
+  border-left: 3px solid var(--gold);
+}
+
+.recap-section h4 {
+  font-family: var(--font-display);
+  font-size: 20px;
+  color: var(--navy);
+  margin-bottom: 14px;
+  font-weight: 700;
+}
+
+.recap-qa {
+  margin-bottom: 14px;
+  padding-bottom: 12px;
+  border-bottom: 1px dashed var(--gray-200);
+}
+
+.recap-qa:last-child {
+  margin-bottom: 0;
+  padding-bottom: 0;
+  border-bottom: none;
+}
+
+.recap-q {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--gray-600);
+  margin-bottom: 4px;
+}
+
+.recap-a {
+  font-size: 14px;
+  color: var(--navy);
+  line-height: 1.55;
+  white-space: pre-wrap;
+}
+
+.recap-a.empty {
+  color: var(--gray-400);
+  font-style: italic;
+}
+
+/* === ACTIONS === */
+.results-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 12px;
+  margin: 40px 0 30px;
+}
+
+.action-btn {
+  padding: 14px 28px;
+  font-family: var(--font-body);
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  border-radius: 100px;
+  cursor: pointer;
+  transition: all 0.3s;
+  border: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.action-btn.primary {
+  background: var(--navy);
+  color: var(--cream);
+}
+
+.action-btn.primary:hover {
+  background: var(--gold);
+  color: var(--navy);
+}
+
+.action-btn.secondary {
+  background: transparent;
+  color: var(--navy);
+  border: 1.5px solid var(--gray-300);
+}
+
+.action-btn.secondary:hover {
+  border-color: var(--gold);
+  color: var(--gold);
+}
+
+.closing-note {
+  text-align: center;
+  margin-top: 30px;
+  padding: 24px;
+  background: var(--gold-dim);
+  border-radius: 12px;
+  font-size: 14px;
+  color: var(--gray-600);
+  line-height: 1.65;
+}
+
+.closing-note strong {
+  color: var(--navy);
+}
+
+/* === ANIMATIONS === */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* === SAVE INDICATOR === */
+.save-indicator {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  background: var(--navy);
+  color: var(--cream);
+  padding: 10px 18px;
+  border-radius: 100px;
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 0.5px;
+  opacity: 0;
+  transition: opacity 0.3s;
+  z-index: 200;
+  pointer-events: none;
+}
+
+.save-indicator.show {
+  opacity: 1;
+}
+
+/* === PRINT === */
+@media print {
+  body { background: white; }
+  .app { max-width: 100%; padding: 0; }
+  .progress-wrap, .nav, .results-actions, .save-indicator, .closing-note { display: none !important; }
+  .insight-card, .recap-section, .results-axes {
+    break-inside: avoid;
+    box-shadow: none !important;
+    border: 1px solid #ccc;
+  }
+  .results-header h1 { font-size: 28px; }
+  .insight-title { font-size: 18px; }
+  .recap-section h4 { font-size: 16px; }
+  * { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+}
+
+/* === RESPONSIVE === */
+@media (max-width: 640px) {
+  .scale-options { gap: 4px; }
+  .scale-option { font-size: 12px; min-height: 36px; }
+  .section-number { font-size: 40px; }
+  .question-label { font-size: 18px; }
+  .intro h1 { font-size: 32px; }
+}
+</style>
+</head>
+<body>
+<div class="app" id="app"></div>
+<div class="save-indicator" id="saveIndicator">Uložené</div>
+
+<script>
+// ============================================================
+// ŠTRUKTÚRA DIAGNOSTIKY
+// ============================================================
+
+const SECTIONS = [
+  {
+    id: 'intro',
+    number: '01',
+    title: 'Kontrakt so sebou',
+    intro: 'Pred začiatkom si ujasni, prečo toto robíš. Úprimnosť nie je na papieri — je v odpovedi sebe.',
+    questions: [
+      { id: 'contract_1', type: 'text', label: 'Čo chceš, aby ti tento formulár priniesol?', hint: 'Jedna veta stačí' },
+      { id: 'contract_2', type: 'text', label: 'Čo by sa muselo stať, aby si na konci povedal, že to malo zmysel?' },
+      { id: 'contract_3', type: 'text', label: 'Si dnes ochotný byť úprimný aj tam, kde to bolí?', hint: 'Odpoveď píš len sebe' }
+    ]
+  },
+  {
+    id: 'basic',
+    number: '02',
+    title: 'Základné informácie',
+    intro: 'Krátka kontextová sekcia. Fakty — bez sebahodnotenia.',
+    questions: [
+      { id: 'basic_name', type: 'short', label: 'Meno a priezvisko' },
+      { id: 'basic_email', type: 'short', label: 'E-mail' },
+      { id: 'basic_phone', type: 'short', label: 'Telefónne číslo' },
+      { id: 'basic_field', type: 'short', label: 'V akej oblasti dnes pôsobíš?' },
+      { id: 'basic_role', type: 'short', label: 'Aká je tvoja presná rola?' },
+      { id: 'basic_years', type: 'short', label: 'Koľko rokov pôsobíš v odbore? Koľko rokov vedieš ľudí?' },
+      { id: 'basic_market', type: 'short', label: 'Na akom trhu dnes pôsobíš?' },
+      { id: 'basic_team', type: 'short', label: 'Koľko ľudí dnes vedieš?' },
+      { id: 'basic_phase', type: 'text', label: 'Ako by si stručne opísal svoju aktuálnu fázu kariéry alebo leadershipu?' }
+    ]
+  },
+  {
+    id: 'personal',
+    number: '03',
+    title: 'Tvoje osobné výsledky',
+    intro: 'Pozri sa na seba ako na obchodníka / profesionála, nie ako na manažéra. Čísla, stabilita, zdroj výkonu.',
+    questions: [
+      { id: 'perf_today', type: 'text', label: 'Aké výsledky dnes osobne dosahuješ?', hint: 'Uveď konkrétne čísla — obrat, provízie, objem' },
+      { id: 'perf_avg', type: 'short', label: 'Aký je tvoj priemerný osobný výkon za posledných 6 mesiacov?' },
+      { id: 'perf_best', type: 'short', label: 'Aký bol tvoj najlepší mesiac za posledný rok?' },
+      { id: 'perf_worst', type: 'short', label: 'Aký bol tvoj najslabší mesiac za posledný rok?' },
+      { id: 'perf_stability', type: 'scale', label: 'Ako stabilné sú tvoje osobné výsledky?', hint: '1 = úplne chaotické, 10 = úplne predvídateľné', axis: 'personal', lowLabel: 'Chaos', highLabel: 'Stabilita' },
+      { id: 'perf_gap', type: 'text', label: 'O koľko sú tvoje osobné výsledky dnes nižšie, než by podľa teba mohli byť?', hint: 'Uveď konkrétny rozdiel' },
+      { id: 'perf_system', type: 'text', label: 'Tvoj výkon stojí viac na systéme, alebo na náhode a tlaku?' },
+      { id: 'perf_source', type: 'text', label: 'Vieš presne pomenovať, čo ti dnes prináša výsledky?' },
+      { id: 'perf_leaks', type: 'text', label: 'Kde ti dnes najčastejšie unikajú peniaze, výkon alebo energia?' },
+      { id: 'perf_future', type: 'text', label: 'Ak by si nič nezmenil, kde budeš o 12 mesiacov?' }
+    ]
+  },
+  {
+    id: 'team',
+    number: '04',
+    title: 'Výkon a stav tímu',
+    intro: 'Pozri na tím z výšky. Stabilita, slabé miesta, segmentácia. Jasné čísla pomáhajú viac ako pocity.',
+    questions: [
+      { id: 'team_overall', type: 'text', label: 'Ako by si opísal aktuálny výkon tvojho tímu?' },
+      { id: 'team_stability', type: 'scale', label: 'Aká je stabilita výkonu tímu?', hint: '1 = kolísavá, 10 = veľmi stabilná', axis: 'team', lowLabel: 'Kolísavá', highLabel: 'Stabilná' },
+      { id: 'team_strong', type: 'text', label: 'Kde tím dosahuje dobré výsledky?' },
+      { id: 'team_weak', type: 'text', label: 'Kde tím najviac zlyháva?' },
+      { id: 'team_kpi', type: 'text', label: 'Ktoré obchodné čísla alebo ukazovatele ťa dnes najviac trápia?' },
+      { id: 'team_segment_top', type: 'text', label: 'Kto je tvojich top 20 % tímu? Koľko času im venuješ?', hint: 'Mená alebo iniciály + približný čas' },
+      { id: 'team_segment_mid', type: 'text', label: 'Kto je stredných 60 %? Koľko času im venuješ?' },
+      { id: 'team_segment_bottom', type: 'text', label: 'Kto je spodných 20 %? Koľko času im venuješ?', hint: 'Pozri úprimne — komu venuješ najviac času, hoci by nemal' },
+      { id: 'team_cause', type: 'text', label: 'Vieš presne pomenovať, prečo tím nedosahuje vyššie výsledky?' },
+      { id: 'team_problem_type', type: 'text', label: 'Je problém skôr v aktivite, disciplíne, komunikácii, zatváraní alebo vedení?' },
+      { id: 'team_loss_point', type: 'text', label: 'Kde sa najčastejšie strácajú klienti alebo obchody v rámci tímu?' },
+      { id: 'team_future', type: 'text', label: 'Ak by sa nič nezmenilo, čo bude najväčší problém tímu o 6 – 12 mesiacov?' }
+    ]
+  },
+  {
+    id: 'leadership',
+    number: '05',
+    title: 'Leadership a vedenie ľudí',
+    intro: 'Najťažšia sekcia. Líder sa najčastejšie láme v nezvládnutých ťažkých rozhovoroch a nekonzistencii medzi ambíciou a realitou.',
+    questions: [
+      { id: 'lead_style', type: 'text', label: 'Ako by si opísal svoj štýl vedenia?' },
+      { id: 'lead_authority', type: 'text', label: 'Máš v tíme prirodzený rešpekt, alebo skôr formálnu autoritu?' },
+      { id: 'lead_example', type: 'text', label: 'Vedieš ľudí osobným príkladom? Kde konkrétne áno, kde nie?' },
+      { id: 'lead_reaction', type: 'text', label: 'Ako reaguješ, keď tím neplní očakávania?' },
+      { id: 'lead_strat_vs_react', type: 'scale', label: 'Vedieš ľudí strategicky, alebo reaktívne?', hint: '1 = úplne reaktívne (hasenie), 10 = úplne strategicky', axis: 'leadership', lowLabel: 'Reaktívne', highLabel: 'Strategicky' },
+      { id: 'lead_avoided_talk', type: 'text', label: 'Ktorý rozhovor s človekom odkladáš najdlhšie? Prečo?', hint: 'Konkrétne meno a obsah' },
+      { id: 'lead_fear', type: 'text', label: 'Čo sa bojíš, že sa stane, ak ten rozhovor povedieš?' },
+      { id: 'lead_overdue_decision', type: 'text', label: 'Aké rozhodnutie o človeku si mal spraviť už dávno a nespravil si ho?' },
+      { id: 'lead_insecurity', type: 'text', label: 'Kde sa ako líder cítiš najviac neisto?' },
+      { id: 'lead_braking', type: 'text', label: 'V čom si myslíš, že tím brzdíš ty osobne?' },
+      { id: 'lead_gap', type: 'text', label: 'Kde cítiš rozpor medzi tým, ako chceš viesť, a ako reálne vedieš?' },
+      { id: 'lead_standard_vs_fire', type: 'text', label: 'Nastavuješ štandard, alebo častejšie len hasíš problémy?' },
+      { id: 'lead_weak_perf', type: 'text', label: 'Ako riešiš slabý výkon ľudí v tíme? Uveď posledný konkrétny prípad.' },
+      { id: 'lead_team_view_weakness', type: 'text', label: 'Čo by tvoj tím povedal, že je tvoja najväčšia slabina ako lídra?' },
+      { id: 'lead_team_view_strength', type: 'text', label: 'Čo by povedal, že je tvoja najväčšia sila?' }
+    ]
+  },
+  {
+    id: 'discipline',
+    number: '06',
+    title: 'Disciplína, čas a denné fungovanie',
+    intro: 'Neklamú slová — klame kalendár. Pozri sa na to, komu reálne dávaš svoj čas.',
+    questions: [
+      { id: 'day_typical', type: 'text', label: 'Ako vyzerá tvoj typický pracovný deň?' },
+      { id: 'day_strategic_ratio', type: 'scale', label: 'Koľko percent tvojho týždňa je naplánovaných vedome?', hint: '1 = len reagujem, 10 = všetko je plánované', axis: 'discipline', lowLabel: 'Reakcia', highLabel: 'Plánované' },
+      { id: 'day_pareto', type: 'text', label: 'Ktoré 3 aktivity ti reálne prinášajú 80 % výsledkov? Koľko času im venuješ?' },
+      { id: 'day_postponed', type: 'text', label: 'Ktoré manažérske aktivity pravidelne odkladáš?' },
+      { id: 'day_open_problems', type: 'text', label: 'Ktoré problémy nechávaš príliš dlho otvorené?' },
+      { id: 'day_disruptor', type: 'text', label: 'Čo ťa najčastejšie vyhadzuje z rytmu?' },
+      { id: 'day_consistency', type: 'scale', label: 'Ako by si ohodnotil svoju konzistenciu?', hint: '1 = vlnovka, 10 = disciplinovaná pravidelnosť', axis: 'discipline', lowLabel: 'Vlnovka', highLabel: 'Konzistencia' },
+      { id: 'day_bad_week', type: 'text', label: 'Čo sa deje, keď máš slabší týždeň alebo mesiac? Ako rýchlo sa vraciaš do režimu?' },
+      { id: 'day_week_control', type: 'text', label: 'Máš pocit, že svoj týždeň vedieš ty, alebo že týždeň vedie teba?' },
+      { id: 'day_habits_help', type: 'text', label: 'Ktoré návyky ti dnes najviac pomáhajú ako lídrovi?' },
+      { id: 'day_habits_sabotage', type: 'text', label: 'Ktoré návyky ťa dnes najviac sabotujú?' }
+    ]
+  },
+  {
+    id: 'inner',
+    number: '07',
+    title: 'Vnútorné brzdy a psychika',
+    intro: 'Tu sa pomaly a úprimne. Žiadnu odpoveď neprepísať. Ak bolí, je to správna odpoveď.',
+    questions: [
+      { id: 'inner_personal_block', type: 'text', label: 'Čo ťa dnes najviac brzdí v osobnom výkone?' },
+      { id: 'inner_leader_block', type: 'text', label: 'Čo ťa dnes najviac brzdí v leadershipe?' },
+      { id: 'inner_potential', type: 'text', label: 'Kde cítiš, že ideš dlhodobo pod svoj potenciál?' },
+      { id: 'inner_resistance', type: 'text', label: 'Kedy máš najčastejšie vnútorný odpor konať? Čo si vtedy hovoríš?' },
+      { id: 'inner_frustration', type: 'text', label: 'Čo ťa v posledných mesiacoch najviac frustruje?' },
+      { id: 'inner_stress', type: 'scale', label: 'Akú vysokú úroveň stresu dnes nesieš?', hint: '1 = pokoj, 10 = chronický tlak', axis: 'inner', lowLabel: 'Pokoj', highLabel: 'Chronický tlak' },
+      { id: 'inner_sleep', type: 'text', label: 'Čo ťa v noci nenechá spať?' },
+      { id: 'inner_fear', type: 'text', label: 'Čoho sa bojíš, ak sa situácia nezmení?' },
+      { id: 'inner_doubt', type: 'text', label: 'Kde o sebe dnes najviac pochybuješ?' },
+      { id: 'inner_shame', type: 'text', label: 'Kde cítiš hanbu, aj keď o nej nahlas nehovoríš?' },
+      { id: 'inner_facade', type: 'text', label: 'Kde navonok pôsobíš silno, ale vnútri to tak necítiš?' },
+      { id: 'inner_core', type: 'text', label: 'Keby si mal úplne úprimne pomenovať svoj hlavný vnútorný problém, ako by znel?' }
+    ]
+  },
+  {
+    id: 'identity',
+    number: '08',
+    title: 'Identita lídra',
+    intro: 'Líderský rast = identity rast. Ak sa nemení vnútro, mení sa len forma.',
+    questions: [
+      { id: 'id_today', type: 'text', label: 'Ako sa dnes vnímaš ako líder?' },
+      { id: 'id_three_words', type: 'text', label: 'Akými 3 slovami by si opísal svoju aktuálnu manažérsku identitu?' },
+      { id: 'id_success_behavior', type: 'text', label: 'Ako sa správaš, keď sa ti darí?' },
+      { id: 'id_failure_behavior', type: 'text', label: 'Ako sa správaš, keď sa ti nedarí?' },
+      { id: 'id_inauthentic', type: 'text', label: 'V čom si dnes ako líder neautentický?' },
+      { id: 'id_want_to_be', type: 'text', label: 'Aký typ lídra chceš byť o rok?' },
+      { id: 'id_team_perception', type: 'text', label: 'Ako chceš, aby ťa vnímal tvoj tím?' },
+      { id: 'id_strong_version', type: 'text', label: 'Kedy sa cítiš ako silná verzia seba?' },
+      { id: 'id_weak_version', type: 'text', label: 'Kedy sa cítiš ako slabá verzia seba?' },
+      { id: 'id_stop_doing', type: 'text', label: 'Čo musíš prestať robiť, aby si mohol vyrásť?' },
+      { id: 'id_grow_into', type: 'text', label: 'Do akej identity potrebuješ dorásť?' }
+    ]
+  },
+  {
+    id: 'relationships',
+    number: '09',
+    title: 'Vzťahy a opora',
+    intro: 'Nová sekcia. Líderská kríza je takmer vždy aj vzťahová a rodinná kríza. Žiadny líder nevedie sám.',
+    questions: [
+      { id: 'rel_boss', type: 'text', label: 'Aký máš vzťah so svojím nadriadeným alebo majiteľom?' },
+      { id: 'rel_home', type: 'text', label: 'Máš doma podporu pre svoju rolu?' },
+      { id: 'rel_energy_source', type: 'text', label: 'Z koho sily dnes čerpáš?' },
+      { id: 'rel_support_person', type: 'text', label: 'Kto ťa reálne drží nad vodou?' },
+      { id: 'rel_isolation', type: 'scale', label: 'Ako veľmi sa cítiš sám vo svojej role?', hint: '1 = mám oporu, 10 = úplne sám', axis: 'inner', lowLabel: 'Mám oporu', highLabel: 'Sám' }
+    ]
+  },
+  {
+    id: 'tried',
+    number: '10',
+    title: 'Čo si už vyskúšal',
+    intro: 'Krátka sekcia. Chceme vedieť, čomu už neveríš a prečo.',
+    questions: [
+      { id: 'tried_what', type: 'text', label: 'Aké riešenia si už skúšal, aby si sa posunul? (školenia, mentoringy, programy)' },
+      { id: 'tried_helped', type: 'text', label: 'Čo z toho ti reálne pomohlo?' },
+      { id: 'tried_failed', type: 'text', label: 'Čo nepomohlo? Prečo to podľa teba zlyhalo?' },
+      { id: 'tried_disappointment', type: 'text', label: 'Čo ťa na doterajších riešeniach najviac sklamalo?' },
+      { id: 'tried_overheard', type: 'text', label: 'Ktoré rady si počul už príliš veľakrát? Čomu už neveríš?' },
+      { id: 'tried_missing', type: 'text', label: 'Čo ti doteraz v riešeniach najviac chýbalo?' }
+    ]
+  },
+  {
+    id: 'desired',
+    number: '11',
+    title: 'Tvoj cieľ podľa GPS',
+    intro: 'Záverečná sekcia používa rámec GPS — Cieľ / Plán / Systém. Jasnosť v tejto sekcii predpovedá výsledok viac ako všetko ostatné dokopy.',
+    questions: [
+      { id: 'gps_goal', type: 'text', label: 'G — Aký presný merateľný výsledok chceš mať o 12 mesiacov?', hint: 'Ak je to možné, s číslami' },
+      { id: 'gps_why', type: 'text', label: 'G — Prečo ti na tom naozaj záleží? (vnútorná motivácia)' },
+      { id: 'gps_boundaries', type: 'text', label: 'G — Aké hranice neprekročíš? (napr. čas s rodinou, zdravie)' },
+      { id: 'gps_steps', type: 'text', label: 'P — Aké sú 3 – 5 kľúčových krokov, ktoré ťa tam dostanú?' },
+      { id: 'gps_realistic', type: 'text', label: 'P — Je to realistické pri dokonalom vykonaní?' },
+      { id: 'gps_stick', type: 'text', label: 'P — Budeš sa plánu naozaj držať? Buď úprimný na základe minulých skúseností.' },
+      { id: 'gps_track', type: 'text', label: 'S — Ako budeš sledovať pokrok? Čo presne budeš merať?' },
+      { id: 'gps_reminders', type: 'text', label: 'S — Ako si budeš pripomínať cieľ? (kalendár, notifikácie, rituály)' },
+      { id: 'gps_accountability', type: 'text', label: 'S — Kto ťa bude držať zodpovedným?' },
+      { id: 'gps_success_criteria', type: 'text', label: 'Ako spoznáš, že transformácia bola úspešná?' }
+    ]
+  },
+  {
+    id: 'decision',
+    number: '12',
+    title: 'Rozhodovanie a cena nečinnosti',
+    intro: 'Abstraktná cena nebolí. Konkrétna áno. Tu sa nečinnosť mení na číslo.',
+    questions: [
+      { id: 'dec_speed', type: 'text', label: 'Ako rýchlo sa zvyčajne rozhoduješ pri dôležitých investíciách?' },
+      { id: 'dec_style', type: 'text', label: 'Rozhoduješ sa skôr podľa logiky, dôvery, referencií alebo pocitu?' },
+      { id: 'dec_doubts', type: 'text', label: 'Aké máš dnes najväčšie pochybnosti pri investícii do seba alebo tímu?' },
+      { id: 'dec_ready', type: 'text', label: 'Si pripravený urobiť reálnu zmenu, alebo dnes skôr zbieraš informácie?' },
+      { id: 'dec_cost_money', type: 'text', label: 'Koľko ťa stojí dnešný stav v peniazoch za rok?' },
+      { id: 'dec_cost_energy', type: 'text', label: 'Koľko ťa stojí v energii a vzťahoch?' },
+      { id: 'dec_cost_future', type: 'text', label: 'Koľko ťa bude stáť o 3 roky, ak nič nezmeníš?' },
+      { id: 'dec_now', type: 'text', label: 'Prečo dáva zmysel riešiť to práve teraz?' }
+    ]
+  },
+  {
+    id: 'reflection',
+    number: '13',
+    title: 'Záverečná reflexia',
+    intro: 'Formulár je zážitok, nie papier. Tieto 3 odpovede sú pre nás najdôležitejšie.',
+    questions: [
+      { id: 'ref_insight', type: 'text', label: 'Čo si sa pri vypĺňaní o sebe dozvedel, čo si dovtedy nevidel?' },
+      { id: 'ref_hitme', type: 'text', label: 'Ktorá otázka ťa najviac zasiahla? Prečo?' },
+      { id: 'ref_hidden', type: 'text', label: 'Čo si si pri vypĺňaní všimol, čo sám sebe nerád priznávaš?' }
+    ]
+  }
+];
+
+// ============================================================
+// STAV
+// ============================================================
+
+const STORAGE_KEY = 'diagnostika_manazera_v1';
+
+let state = {
+  screen: 'intro',
+  name: '',
+  sectionIndex: 0,
+  answers: {},
+  startedAt: null
+};
+
+// Load from storage
+try {
+  const saved = JSON.parse(localStorage.getItem(STORAGE_KEY) || 'null');
+  if (saved && saved.answers && Object.keys(saved.answers).length > 0) {
+    state = { ...state, ...saved };
+  }
+} catch (e) { /* ignore */ }
+
+function saveState() {
+  try {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+    showSaveIndicator();
+  } catch (e) { /* ignore */ }
+}
+
+let saveTimer;
+function showSaveIndicator() {
+  const el = document.getElementById('saveIndicator');
+  if (!el) return;
+  clearTimeout(saveTimer);
+  el.classList.add('show');
+  saveTimer = setTimeout(() => el.classList.remove('show'), 1500);
+}
+
+// ============================================================
+// SKÓROVANIE + INSIGHTS
+// ============================================================
+
+function calculateAxes() {
+  const axes = {
+    personal: { values: [], label: 'Osobná stabilita výkonu' },
+    team: { values: [], label: 'Výkon tímu' },
+    leadership: { values: [], label: 'Leadership jasnosť' },
+    discipline: { values: [], label: 'Disciplína a čas' },
+    inner: { values: [], label: 'Vnútorná stabilita' }
+  };
+
+  SECTIONS.forEach(sec => {
+    sec.questions.forEach(q => {
+      if (q.type === 'scale' && q.axis) {
+        const val = state.answers[q.id];
+        if (typeof val === 'number') {
+          // Pre inner axis (stress, isolation) obraciame - vyšší skór = horšie
+          if (q.id === 'inner_stress' || q.id === 'rel_isolation') {
+            axes[q.axis].values.push(11 - val);
+          } else {
+            axes[q.axis].values.push(val);
+          }
+        }
+      }
+    });
+  });
+
+  const result = {};
+  Object.keys(axes).forEach(k => {
+    const vals = axes[k].values;
+    result[k] = {
+      label: axes[k].label,
+      score: vals.length > 0 ? Math.round((vals.reduce((a,b) => a+b, 0) / vals.length) * 10) / 10 : null
+    };
+  });
+  return result;
+}
+
+function generateInsights() {
+  const axes = calculateAxes();
+  const insights = [];
+
+  // 1. Najslabšia os
+  const valid = Object.entries(axes).filter(([k,v]) => v.score !== null);
+  if (valid.length > 0) {
+    const sorted = [...valid].sort((a,b) => a[1].score - b[1].score);
+    const weakest = sorted[0];
+    const strongest = sorted[sorted.length - 1];
+
+    if (weakest[1].score <= 4) {
+      insights.push({
+        tag: 'alert',
+        tagText: 'Kritické miesto',
+        title: `Najslabšia oblasť: ${weakest[1].label}`,
+        text: `Tvoje skóre v tejto osi je ${weakest[1].score} z 10. Toto je miesto, kde má aktuálne tvoj leadership alebo výkon najväčšiu zraniteľnosť. Bez cielenej intervencie sa ďalšie oblasti budú postupne zhoršovať, pretože táto os ovplyvňuje všetko ostatné.`,
+        score: weakest[1].score
+      });
+    } else if (weakest[1].score <= 6) {
+      insights.push({
+        tag: 'caution',
+        tagText: 'Na pozor',
+        title: `Oblasť, ktorá ťa brzdí: ${weakest[1].label}`,
+        text: `Skóre ${weakest[1].score} z 10 nie je kritické, ale je to tvoja najslabšia os. Kým sa neposunie o 2 – 3 body vyššie, nebudeš schopný stabilne rásť v ostatných oblastiach.`,
+        score: weakest[1].score
+      });
+    }
+
+    if (strongest[1].score >= 7 && strongest[0] !== weakest[0]) {
+      insights.push({
+        tag: 'good',
+        tagText: 'Silná stránka',
+        title: `Tvoja najsilnejšia os: ${strongest[1].label}`,
+        text: `Skóre ${strongest[1].score} z 10. Toto je tvoj základ, z ktorého vieš rásť. V práci nad ostatnými oblasťami sa opri o to, čo už máš.`,
+        score: strongest[1].score
+      });
+    }
+  }
+
+  // 2. Leadership — ak máš odkladaný rozhovor
+  const avoidedTalk = (state.answers['lead_avoided_talk'] || '').trim();
+  if (avoidedTalk.length > 20) {
+    insights.push({
+      tag: 'alert',
+      tagText: 'Neodkladný rozhovor',
+      title: 'Odkladaný rozhovor drží tvoj leadership v pate',
+      text: 'Pomenoval si konkrétny rozhovor, ktorý odkladáš. Každý deň odkladu ťa stojí autoritu v celom tíme — nielen voči tomu človeku. Tím vidí viac, než si myslíš. Toto je najvyššia priorita na najbližšie stretnutie.',
+      score: null
+    });
+  }
+
+  // 3. Kalendárová pravda — Pareto
+  const pareto = (state.answers['day_pareto'] || '').trim();
+  if (pareto.length < 20) {
+    insights.push({
+      tag: 'caution',
+      tagText: 'Chýbajúca jasnosť',
+      title: 'Nemáš pomenované, čo ti reálne prináša výsledky',
+      text: 'Keď líder nevie pomenovať svojich 3 aktivít, ktoré prinášajú 80 % výsledkov, jeho týždeň nevedie on — vedie ho tím, klienti a operatíva. Bez tejto jasnosti je disciplína nemožná.',
+      score: null
+    });
+  }
+
+  // 4. GPS kompletnosť
+  const gpsGoal = (state.answers['gps_goal'] || '').trim();
+  const gpsSteps = (state.answers['gps_steps'] || '').trim();
+  const gpsTrack = (state.answers['gps_track'] || '').trim();
+  const gpsComplete = [gpsGoal, gpsSteps, gpsTrack].filter(x => x.length > 15).length;
+
+  if (gpsComplete < 2) {
+    insights.push({
+      tag: 'caution',
+      tagText: 'GPS nekompletné',
+      title: 'Tvoj cieľ na rok nemá všetky 3 vrstvy',
+      text: 'GPS = Cieľ + Plán + Systém. Ak chýba jedna z týchto vrstiev, cieľ sa stáva želaním. Najčastejšie chýba Systém — merné jednotky, rituály, zodpovednosť. Bez systému neprežije ani najlepší plán.',
+      score: null
+    });
+  } else if (gpsComplete === 3) {
+    insights.push({
+      tag: 'good',
+      tagText: 'Jasný cieľ',
+      title: 'Máš zadefinované všetky 3 vrstvy GPS',
+      text: 'Cieľ + Plán + Systém — toto je 80 % práce. Zostáva len dôslednosť vo vykonaní. Na stretnutí sa pozrieme, či plán dokážeš ustáť aj v horšie dni.',
+      score: null
+    });
+  }
+
+  // 5. Vnútorná stabilita
+  const innerCore = (state.answers['inner_core'] || '').trim();
+  if (innerCore.length > 30) {
+    insights.push({
+      tag: 'alert',
+      tagText: 'Jadrový bod',
+      title: 'Pomenoval si svoj hlavný vnútorný problém',
+      text: 'To, že si ho vedel pomenovať, je sama o sebe polovica transformácie. Nie každý sa do tejto hĺbky dostane. Toto je bod, okolo ktorého bude celé stretnutie.',
+      score: null
+    });
+  }
+
+  // 6. Segmentácia tímu
+  const top20 = (state.answers['team_segment_top'] || '').trim();
+  const bottom20 = (state.answers['team_segment_bottom'] || '').trim();
+  if (top20 && bottom20) {
+    // Primitívna heuristika: ak v dolnej časti píše viac času než v hornej
+    const topHasTime = /hodin|min|%|deň|týžd/i.test(top20);
+    const bottomHasTime = /hodin|min|%|deň|týžd/i.test(bottom20);
+    if (bottomHasTime && !topHasTime) {
+      insights.push({
+        tag: 'caution',
+        tagText: 'Obrátené priority',
+        title: 'Tvoj čas tečie do spodných 20 %, nie do top 20 %',
+        text: 'Klasická manažérska pasca: problémový ľudia kradnú čas, top výkonári zostávajú zanedbaní. Top 20 % ti prináša najviac peňazí a najviac ich stráca, keď im nevenuješ pozornosť.',
+        score: null
+      });
+    }
+  }
+
+  return insights.slice(0, 6); // max 6
+}
+
+// ============================================================
+// RENDER
+// ============================================================
+
+function render() {
+  const app = document.getElementById('app');
+  if (state.screen === 'intro') {
+    app.innerHTML = renderIntro();
+  } else if (state.screen === 'section') {
+    app.innerHTML = renderSection();
+  } else if (state.screen === 'results') {
+    app.innerHTML = renderResults();
+  }
+  bindEvents();
+}
+
+function renderIntro() {
+  const hasProgress = Object.keys(state.answers).length > 0;
+  const progressText = hasProgress
+    ? `<p class="intro-desc" style="color: var(--gold); font-weight: 600;">Máš rozpracovanú diagnostiku — môžeš pokračovať tam, kde si skončil.</p>`
+    : '';
+
+  return `
+    <div class="intro">
+      <div class="intro-badge">Diagnostika manažéra · v1</div>
+      <h1>Kde dnes stojíš<br>ako <em>líder</em>?</h1>
+      <p class="intro-desc">
+        Tento nástroj ti pomôže zistiť, kde sa nachádzaš ako manažér,
+        čo brzdí tvoj výkon aj výkon tímu a čo treba zmeniť,
+        aby si viedol s istotou a výsledkami.
+      </p>
+      <p class="intro-meta">13 sekcií · cca 45 – 60 min · odpovede sa ti automaticky ukladajú</p>
+
+      ${progressText}
+
+      <div class="intro-contract">
+        <h4>Predtým, než začneš</h4>
+        <p>
+          Tento formulár nie je o imidži. Je o realite.<br>
+          Čím úprimnejšie odpovieš, tým viac si z toho odnesieš.<br>
+          Odpovede píš len sebe — aj keď vieš, že ich uvidí aj niekto iný.
+        </p>
+      </div>
+
+      <div class="intro-form">
+        <input type="text" id="nameInput" placeholder="Tvoje meno a priezvisko" value="${state.name || ''}" />
+      </div>
+
+      <button class="btn-primary" id="startBtn" ${state.name ? '' : 'disabled'}>
+        ${hasProgress ? 'Pokračovať' : 'Začať diagnostiku'}
+      </button>
+
+      ${hasProgress ? `<button class="btn-secondary" id="resetBtn" style="margin-top: 14px;">Začať odznova</button>` : ''}
+    </div>
+  `;
+}
+
+function renderSection() {
+  const sec = SECTIONS[state.sectionIndex];
+  const totalSections = SECTIONS.length;
+  const currentNum = state.sectionIndex + 1;
+  const progress = Math.round((currentNum / totalSections) * 100);
+
+  const questionsHtml = sec.questions.map(q => renderQuestion(q)).join('');
+
+  return `
+    <div class="progress-wrap">
+      <div class="progress-header">
+        <span class="progress-label">Sekcia ${currentNum} z ${totalSections}</span>
+        <span class="progress-count">${progress}%</span>
+      </div>
+      <div class="progress-bar">
+        <div class="progress-fill" style="width: ${progress}%"></div>
+      </div>
+      <div class="section-label">${sec.title}</div>
+    </div>
+
+    <div class="section-header">
+      <div class="section-number">${sec.number}</div>
+      <h2 class="section-title">${sec.title}</h2>
+      <div class="section-intro">${sec.intro}</div>
+    </div>
+
+    ${questionsHtml}
+
+    <div class="nav">
+      <button class="nav-btn" id="prevBtn" ${state.sectionIndex === 0 ? 'disabled' : ''}>← Späť</button>
+      <button class="nav-btn primary" id="nextBtn">
+        ${state.sectionIndex === SECTIONS.length - 1 ? 'Dokončiť diagnostiku →' : 'Pokračovať →'}
+      </button>
+    </div>
+  `;
+}
+
+function renderQuestion(q) {
+  const val = state.answers[q.id];
+  if (q.type === 'scale') {
+    const options = Array.from({length: 10}, (_, i) => {
+      const n = i + 1;
+      const isSelected = val === n;
+      return `<div class="scale-option ${isSelected ? 'selected' : ''}" data-qid="${q.id}" data-val="${n}">${n}</div>`;
+    }).join('');
+    return `
+      <div class="scale-block">
+        <div class="scale-label">${q.label}</div>
+        ${q.hint ? `<div class="scale-hint">${q.hint}</div>` : ''}
+        <div class="scale-options">${options}</div>
+        <div class="scale-ends">
+          <span>1 — ${q.lowLabel || 'Málo'}</span>
+          <span>${q.highLabel || 'Veľa'} — 10</span>
+        </div>
+      </div>
+    `;
+  }
+
+  const isShort = q.type === 'short';
+  const inputClass = isShort ? 'question-input short' : 'question-input';
+  const inputEl = isShort
+    ? `<input type="text" class="${inputClass}" data-qid="${q.id}" value="${escapeHtml(val || '')}" />`
+    : `<textarea class="${inputClass}" data-qid="${q.id}" rows="3">${escapeHtml(val || '')}</textarea>`;
+
+  return `
+    <div class="question-block">
+      <div class="question-label">${q.label}</div>
+      ${q.hint ? `<div class="question-hint">${q.hint}</div>` : ''}
+      ${inputEl}
+    </div>
+  `;
+}
+
+function escapeHtml(s) {
+  return String(s || '')
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;');
+}
+
+function renderResults() {
+  const axes = calculateAxes();
+  const insights = generateInsights();
+  const date = new Date().toLocaleDateString('sk-SK', { day: 'numeric', month: 'long', year: 'numeric' });
+
+  const axesHtml = Object.entries(axes)
+    .filter(([k, v]) => v.score !== null)
+    .map(([k, v]) => {
+      const pct = v.score * 10;
+      const cls = v.score <= 4 ? 'low' : v.score <= 7 ? 'mid' : 'high';
+      return `
+        <div class="axis-row">
+          <div class="axis-header">
+            <span class="axis-name">${v.label}</span>
+            <span class="axis-value">${v.score} / 10</span>
+          </div>
+          <div class="axis-bar">
+            <div class="axis-fill ${cls}" style="width: ${pct}%"></div>
+          </div>
+        </div>
+      `;
+    }).join('');
+
+  const insightsHtml = insights.map(ins => `
+    <div class="insight-card">
+      <div class="insight-header">
+        <span class="insight-tag ${ins.tag}">${ins.tagText}</span>
+        ${ins.score !== null ? `<span class="insight-score">${ins.score}<small>/10</small></span>` : ''}
+      </div>
+      <div class="insight-title">${ins.title}</div>
+      <div class="insight-text">${ins.text}</div>
+    </div>
+  `).join('');
+
+  const recapHtml = SECTIONS.map(sec => {
+    const qaHtml = sec.questions.map(q => {
+      const val = state.answers[q.id];
+      let display;
+      if (q.type === 'scale') {
+        display = val ? `${val} / 10` : '';
+      } else {
+        display = val || '';
+      }
+      const isEmpty = !display;
+      return `
+        <div class="recap-qa">
+          <div class="recap-q">${q.label}</div>
+          <div class="recap-a ${isEmpty ? 'empty' : ''}">${isEmpty ? '— bez odpovede —' : escapeHtml(display)}</div>
+        </div>
+      `;
+    }).join('');
+
+    return `
+      <div class="recap-section">
+        <h4>${sec.number}. ${sec.title}</h4>
+        ${qaHtml}
+      </div>
+    `;
+  }).join('');
+
+  return `
+    <div class="results">
+      <div class="results-header">
+        <div class="badge">Výstup diagnostiky</div>
+        <h1>Tvoj leadership profil</h1>
+        <div class="results-meta">
+          <strong>${state.name || 'Nepomenovaný respondent'}</strong> · ${date}
+        </div>
+      </div>
+
+      <div class="results-intro">
+        Toto zrkadlenie nie je diagnóza ani výrok. Sú to body, ktoré sa na základe tvojich odpovedí
+        oplatí rozobrať na stretnutí. Reálna práca začína až v rozhovore.
+      </div>
+
+      ${axesHtml ? `
+        <div class="results-axes">
+          <h3>Profil na 5 kľúčových osiach</h3>
+          <div class="results-axes-desc">Založené na tvojich odpovediach na škálových otázkach</div>
+          ${axesHtml}
+        </div>
+      ` : ''}
+
+      ${insightsHtml ? `<div>${insightsHtml}</div>` : ''}
+
+      <div class="results-actions">
+        <button class="action-btn primary" id="printBtn">🖨 Vytlačiť / uložiť ako PDF</button>
+        <button class="action-btn secondary" id="emailBtn">✉ Odoslať mailom</button>
+        <button class="action-btn secondary" id="copyBtn">⎘ Skopírovať odpovede</button>
+      </div>
+
+      <div class="recap">
+        <h3>Všetky tvoje odpovede</h3>
+        <div class="recap-desc">Na vytlačenie aj na zdieľanie s facilitátorom stretnutia</div>
+        ${recapHtml}
+      </div>
+
+      <div class="closing-note">
+        <strong>Ďalší krok:</strong> Odošli tento výstup mailom na dohodnutú adresu.<br>
+        Na osobnom stretnutí ho spolu rozoberieme do hĺbky.
+      </div>
+    </div>
+  `;
+}
+
+// ============================================================
+// EVENTS
+// ============================================================
+
+function bindEvents() {
+  const nameInput = document.getElementById('nameInput');
+  if (nameInput) {
+    nameInput.addEventListener('input', e => {
+      state.name = e.target.value.trim();
+      const btn = document.getElementById('startBtn');
+      if (btn) btn.disabled = !state.name;
+      saveState();
+    });
+  }
+
+  const startBtn = document.getElementById('startBtn');
+  if (startBtn) startBtn.addEventListener('click', () => {
+    if (!state.startedAt) state.startedAt = new Date().toISOString();
+    state.screen = 'section';
+    saveState();
+    render();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  });
+
+  const resetBtn = document.getElementById('resetBtn');
+  if (resetBtn) resetBtn.addEventListener('click', () => {
+    if (confirm('Naozaj chceš vymazať všetky odpovede a začať odznova?')) {
+      state = {
+        screen: 'intro',
+        name: '',
+        sectionIndex: 0,
+        answers: {},
+        startedAt: null
+      };
+      saveState();
+      render();
+    }
+  });
+
+  // Text inputs
+  document.querySelectorAll('.question-input').forEach(el => {
+    el.addEventListener('input', e => {
+      const qid = e.target.dataset.qid;
+      state.answers[qid] = e.target.value;
+      saveState();
+    });
+  });
+
+  // Scale options
+  document.querySelectorAll('.scale-option').forEach(el => {
+    el.addEventListener('click', e => {
+      const qid = el.dataset.qid;
+      const val = parseInt(el.dataset.val, 10);
+      state.answers[qid] = val;
+      saveState();
+      // Update UI
+      document.querySelectorAll(`.scale-option[data-qid="${qid}"]`).forEach(o => o.classList.remove('selected'));
+      el.classList.add('selected');
+    });
+  });
+
+  const prevBtn = document.getElementById('prevBtn');
+  if (prevBtn) prevBtn.addEventListener('click', () => {
+    if (state.sectionIndex > 0) {
+      state.sectionIndex--;
+      saveState();
+      render();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  });
+
+  const nextBtn = document.getElementById('nextBtn');
+  if (nextBtn) nextBtn.addEventListener('click', () => {
+    if (state.sectionIndex < SECTIONS.length - 1) {
+      state.sectionIndex++;
+      saveState();
+      render();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    } else {
+      state.screen = 'results';
+      saveState();
+      render();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  });
+
+  const printBtn = document.getElementById('printBtn');
+  if (printBtn) printBtn.addEventListener('click', () => window.print());
+
+  const emailBtn = document.getElementById('emailBtn');
+  if (emailBtn) emailBtn.addEventListener('click', () => {
+    const text = buildEmailText();
+    const subject = encodeURIComponent(`Diagnostika manažéra — ${state.name || 'respondent'}`);
+    const body = encodeURIComponent(text);
+    window.location.href = `mailto:?subject=${subject}&body=${body}`;
+  });
+
+  const copyBtn = document.getElementById('copyBtn');
+  if (copyBtn) copyBtn.addEventListener('click', async () => {
+    try {
+      await navigator.clipboard.writeText(buildEmailText());
+      copyBtn.textContent = '✓ Skopírované';
+      setTimeout(() => { copyBtn.innerHTML = '⎘ Skopírovať odpovede'; }, 2000);
+    } catch (e) {
+      alert('Kopírovanie zlyhalo. Skús prosím manuálne označiť text.');
+    }
+  });
+}
+
+function buildEmailText() {
+  const date = new Date().toLocaleDateString('sk-SK');
+  let text = `DIAGNOSTIKA MANAŽÉRA\n`;
+  text += `===================\n\n`;
+  text += `Meno: ${state.name || '—'}\n`;
+  text += `Dátum: ${date}\n\n`;
+
+  const axes = calculateAxes();
+  const axesWithValues = Object.entries(axes).filter(([k,v]) => v.score !== null);
+  if (axesWithValues.length > 0) {
+    text += `PROFIL NA 5 OSIACH\n`;
+    text += `------------------\n`;
+    axesWithValues.forEach(([k,v]) => {
+      text += `${v.label}: ${v.score} / 10\n`;
+    });
+    text += `\n`;
+  }
+
+  SECTIONS.forEach(sec => {
+    text += `\n${sec.number}. ${sec.title.toUpperCase()}\n`;
+    text += '='.repeat(40) + '\n';
+    sec.questions.forEach(q => {
+      const val = state.answers[q.id];
+      let display;
+      if (q.type === 'scale') display = val ? `${val} / 10` : '— bez odpovede —';
+      else display = val || '— bez odpovede —';
+      text += `\n${q.label}\n`;
+      text += `${display}\n`;
+    });
+  });
+
+  return text;
+}
+
+render();
+</script>
+</body>
+</html>
